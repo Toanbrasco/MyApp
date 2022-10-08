@@ -13,6 +13,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 // Xanh lá #4BB543
+// Xanh dương #2196F3
 
 import HomeScreen from './screen/HomeScreen';
 import Spending from './screen/Spending';

@@ -45,7 +45,7 @@ const Credit = ({ route, navigation }) => {
         setMode(currentMode);
     };
     const handleAddCredit = () => {
-        if (creditCard.accountNum.length >= 5 && creditCard.creditNum.length === 12 && creditCard.expDate.length === 5
+        if (creditCard.accountNum.length >= 5 && creditCard.creditNum.length === 16 && creditCard.expDate.length === 5
             && creditCard.typeCredit.length >= 4 && creditCard.brandCredit.length >= 5) {
             firestore()
                 .collection('Credit')
@@ -53,6 +53,14 @@ const Credit = ({ route, navigation }) => {
                 .then(() => {
                     ToastAndroid.show('Thêm thẻ thành công!', ToastAndroid.SHORT);
                     // console.log('Credit added!');
+                    setCreditCard({
+                        accountNum: '',
+                        creditNum: '',
+                        expDate: '',
+                        typeCredit: '',
+                        brandCredit: ''
+                    })
+                    navigation.navigate('Home')
                 });
         } else {
             ToastAndroid.show('Có gì đó sai sai!', ToastAndroid.SHORT);
@@ -60,7 +68,7 @@ const Credit = ({ route, navigation }) => {
         }
     }
     const handleEditCredit = () => {
-        if (creditCard.accountNum.length >= 5 && creditCard.creditNum.length === 12 && creditCard.expDate.length === 5
+        if (creditCard.accountNum.length >= 5 && creditCard.creditNum.length === 16 && creditCard.expDate.length === 5
             && creditCard.typeCredit.length >= 4 && creditCard.brandCredit.length >= 5) {
             firestore()
                 .collection('Credit')
@@ -78,7 +86,13 @@ const Credit = ({ route, navigation }) => {
     }
     const FormatExpDate = (date) => {
         let year = date.getFullYear().toString()
-        return `${date.getDate()}/${year[2] + year[3]}`
+        if (date.getDate() < 10) {
+            console.log(`=>`, `${"0" + date.getDate()}/${year[2] + year[3]}`)
+            return `${"0" + date.getDate()}/${year[2] + year[3]}`
+        } else {
+            console.log(`=>`, `${date.getDate()}/${year[2] + year[3]}`)
+            return `${date.getDate()}/${year[2] + year[3]}`
+        }
     }
 
     const getCreditDetail = async () => {
@@ -121,8 +135,8 @@ const Credit = ({ route, navigation }) => {
                             <View style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'column' }}>
                                 <View style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                     {
-                                        addSpace(creditCard.creditNum).map((num) =>
-                                            <Text key={num} style={[{ color: '#dedede', fontWeight: 'normal', fontSize: 35 }]}>{num}</Text>
+                                        addSpace(creditCard.creditNum).map((num, index) =>
+                                            <Text key={index + 'AD' + num} style={[{ color: '#dedede', fontWeight: 'normal', fontSize: 25 }]}>{num}</Text>
                                         )
                                     }
                                 </View>
@@ -146,11 +160,11 @@ const Credit = ({ route, navigation }) => {
                                     <TextInput placeholderTextColor="#A5A5A5" placeholder="Loại thẻ" style={[styles.textInput, { marginLeft: 10, flex: 1, marginTop: 0 }]}
                                         name="typeCredit" onChangeText={(newText) => setCreditCard({ ...creditCard, typeCredit: newText })} defaultValue={creditCard.typeCredit} />
                                 </View>
-                                <TextInput placeholderTextColor="#A5A5A5" placeholder="Số thẻ" keyboardType='numeric' style={styles.textInput} maxLength={12}
+                                <TextInput placeholderTextColor="#A5A5A5" placeholder="Số thẻ" keyboardType='numeric' style={styles.textInput} maxLength={16}
                                     name="creditNum" onChangeText={(newText) => setCreditCard({ ...creditCard, creditNum: newText })} defaultValue={creditCard.creditNum} />
                                 <View style={{ width: '100%', marginTop: 20, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <TextInput placeholderTextColor="#A5A5A5" placeholder="Ngày hết hạn" editable={false} style={[styles.textInput, { flex: 2, marginRight: 10, marginTop: 0 }]}
-                                        name="expDate" onChangeText={(newText) => setCreditCard({ ...creditCard, expDate: newText })} defaultValue={creditCard.expDate} />
+                                        name="expDate" defaultValue={creditCard.expDate} />
                                     <TouchableOpacity onPress={() => setShow(true)} style={[styles.buttonPicker, { flex: 5 }]}>
                                         <FontAwesomeIcon icon={faCalendarDay} />
                                     </TouchableOpacity>

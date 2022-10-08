@@ -85,6 +85,7 @@ const HomeScreen = ({ navigation, route }) => {
                     id: '',
                     credit: {}
                 })
+                setRefesh(refesh + 1)
             });
     }
     const { width } = Dimensions.get('window');
@@ -106,28 +107,29 @@ const HomeScreen = ({ navigation, route }) => {
             });
     }, [refesh])
     const [exitApp, setExitApp] = useState(0);
-    const backAction = () => {
-        setTimeout(() => {
-            setExitApp(0);
-        }, 2000); // 2 seconds to tap second-time
+    // const backAction = () => {
+    //     setTimeout(() => {
+    //         setExitApp(0);
+    //     }, 2000); // 2 seconds to tap second-time
 
-        if (exitApp === 0) {
-            setExitApp(exitApp + 1);
+    //     if (exitApp === 0) {
+    //         setExitApp(exitApp + 1);
 
-            ToastAndroid.show('Nhấn phát nữa để thoát', ToastAndroid.SHORT);
-        } else if (exitApp === 1) {
-            BackHandler.exitApp();
-        }
-        return true;
-    };
-    useEffect(() => {
-        const backHandler = BackHandler.addEventListener(
-            'hardwareBackPress',
-            backAction,
-        );
-        return () => backHandler.remove();
-        // BackHandler.removeEventListener('hardwareBackPress', backAction);
-    }, []);
+    //         ToastAndroid.show('Nhấn lần nữa để thoát', ToastAndroid.SHORT);
+    //     } else if (exitApp === 1) {
+    //         BackHandler.exitApp();
+    //     }
+    //     return true;
+    // };
+    // useEffect(() => {
+    //     const backHandler = BackHandler.addEventListener(
+    //         'hardwareBackPress',
+    //         backAction,
+    //     );
+    //     return () => backHandler.remove();
+    //     // BackHandler.removeEventListener('hardwareBackPress', backAction);
+    // }, []);
+
     if (loading) {
         return <Loading />;
     }
@@ -198,10 +200,10 @@ const HomeScreen = ({ navigation, route }) => {
                 </TouchableOpacity>
                 <View style={[
                     {
-                        width: '100%', height: 200, marginTop: 20, borderRadius: 15, backgroundColor: 'white'
+                        width: '100%', height: 200, marginTop: 20, borderRadius: 15, backgroundColor: 'white', overflow: 'hidden'
                     }]}>
                     <SwiperFlatList
-                        style={{ width: '100%', height: 200, borderRadius: 15, }}
+                        style={{ width: '100%', height: 200, borderRadius: 15 }}
                         // autoplayDelay={2}
                         autoplay={false}
                         index={0}
@@ -227,8 +229,8 @@ const HomeScreen = ({ navigation, route }) => {
                                             <View style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'column' }}>
                                                 <View style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                                     {
-                                                        addSpace(item.creditNum).map((num) =>
-                                                            <Text key={num} style={[{ color: '#dedede', fontWeight: 'normal', fontSize: 35 }]}>{num}</Text>
+                                                        addSpace(item.creditNum).map((num, index) =>
+                                                            <Text key={num + 'Home' + index} style={[{ color: '#dedede', fontWeight: 'normal', fontSize: 25 }]}>{num}</Text>
                                                         )
                                                     }
                                                 </View>
@@ -294,8 +296,8 @@ const HomeScreen = ({ navigation, route }) => {
                                                 <View style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'column' }}>
                                                     <View style={{ width: '100%', display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                                                         {
-                                                            addSpace(modalData.credit.creditNum).map((num) =>
-                                                                <Text key={num} style={[{ color: '#dedede', fontWeight: 'normal', fontSize: 35 }]}>{num}</Text>
+                                                            addSpace(modalData.credit.creditNum).map((num, index) =>
+                                                                <Text key={'creditNum' + index + num} style={[{ color: '#dedede', fontWeight: 'normal', fontSize: 20 }]}>{num}</Text>
                                                             )
                                                         }
                                                     </View>

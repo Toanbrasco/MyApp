@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import {
-    View, Text, StyleSheet, SafeAreaView, StatusBar, Modal, Pressable, TouchableOpacity,
-    Platform, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, TextInput, ToastAndroid, FlatList
+    View, Text, StyleSheet, SafeAreaView, StatusBar, Modal, Pressable, TouchableOpacity, Button,
+    Platform, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, TextInput, ToastAndroid, ScrollView
 } from 'react-native'
 
 import { barData, barData2, pieData, DayFormat, TaskList1 } from '../constant';
@@ -13,9 +13,43 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 import firestore from '@react-native-firebase/firestore';
 import Loading from './Loading';
-import { ScrollView } from 'react-native';
+
+// import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+
+
+Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: false,
+        shouldSetBadge: false,
+    }),
+});
 
 const Todo = ({ navigation, route }) => {
+
+    const [expoPushToken, setExpoPushToken] = useState('');
+    const [notification, setNotification] = useState(false);
+    const notificationListener = useRef();
+    const responseListener = useRef();
+
+    useEffect(() => {
+        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+
+        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+            setNotification(notification);
+        });
+
+        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            console.log(response);
+        });
+
+        return () => {
+            Notifications.removeNotificationSubscription(notificationListener.current);
+            Notifications.removeNotificationSubscription(responseListener.current);
+        };
+    }, []);
+
     const [TaskList, setTaskList] = useState([])
     const [loading, setLoading] = useState(true)
     const [show, setShow] = useState(false)
@@ -156,7 +190,33 @@ const Todo = ({ navigation, route }) => {
         })
         return count
     }
+    const schedulePushNotification = async () => {
+        await Notifications.scheduleNotificationAsync({
+            content: {
+                title: "Deadline tới đít rùi!📬",
+                // body: 'Deadline tới đít rùi!',
+                data: { data: 'goes here' },
+            },
+            trigger: { seconds: 2 },
+        });
+    }
+    const registerForPushNotificationsAsync = async () => {
+        let token;
 
+        if (Platform.OS === 'android') {
+            await Notifications.setNotificationChannelAsync('default', {
+                name: 'default',
+                importance: Notifications.AndroidImportance.MAX,
+                vibrationPattern: [0, 250, 250, 250],
+                lightColor: '#FF231F7C',
+            });
+        }
+
+        return token;
+    }
+    const pushNotification = () => {
+
+    }
     useEffect(() => {
         firestore()
             .collection('Todo')
@@ -182,8 +242,16 @@ const Todo = ({ navigation, route }) => {
 
     return (
         <SafeAreaView style={{ flex: 1, position: 'relative', backgroundColor: '#FFF' }}>
-            <StatusBar barStyle="light-content" hidden />
-            <ScrollView style={{}}>
+            <StatusBar barStyle="auto" hidden />
+            {/* <Button
+                title="Press to schedule a notification"
+                onPress={async () => {
+                    await schedulePushNotification();
+                }}
+            /> */}
+            <ScrollView style={{}}
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}>
                 <View style={[styles.container, { marginBottom: 50 }]}>
                     <Text style={{ fontSize: 25, marginTop: 15, color: '#000' }}>Task List</Text>
                     {
@@ -302,14 +370,14 @@ const Todo = ({ navigation, route }) => {
                                             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                                                 <View style={{}}>
                                                     <Text style={{ marginBottom: 5 }}>Tiêu đề Task</Text>
-                                                    <TextInput placeholder="Tiêu đề Task" style={styles.textInput} defaultValue={modalData.titleTask} onChangeText={(newText) => setModalData({ ...modalData, titleTask: newText })} />
+                                                    <TextInput placeholder="Tiêu đề Task" placeholderTextColor="#A5A5A5" style={styles.textInput} defaultValue={modalData.titleTask} onChangeText={(newText) => setModalData({ ...modalData, titleTask: newText })} />
                                                 </View>
                                             </TouchableWithoutFeedback>
                                         </KeyboardAvoidingView>
                                         <View style={{ width: '100%', height: 50, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                                             <TouchableOpacity onPress={showDatepicker} style={[styles.buttonPicker, styles.pikerDate]}>
                                                 <FontAwesomeIcon icon={faCalendarDay} />
-                                                <Text>{DayFormat(modalData.date, 'DATE')}</Text>
+                                                <Text style={{ color: '#000' }}>{DayFormat(modalData.date, 'DATE')}</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity style={[styles.buttonPicker, styles.pikerTime]} onPress={() => setModalData({ ...modalData, notification: !modalData.notification })}>
                                                 <FontAwesomeIcon icon={faBell} />
@@ -345,7 +413,7 @@ const Todo = ({ navigation, route }) => {
                                             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                                                 <View style={styles.inner}>
                                                     <Text style={{ marginBottom: 5 }}>Tiêu đề Task</Text>
-                                                    <TextInput placeholder="Tiêu đề Task" style={styles.textInput}
+                                                    <TextInput placeholderTextColor="#A5A5A5" placeholder="Tiêu đề Task" style={styles.textInput}
                                                         defaultValue={modalData.titleTask} onChangeText={(newText) => setModalData({ ...modalData, titleTask: newText })} />
                                                 </View>
                                             </TouchableWithoutFeedback>
@@ -353,7 +421,7 @@ const Todo = ({ navigation, route }) => {
                                         <View style={{ width: '100%', height: 50, display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                                             <TouchableOpacity onPress={showDatepicker} style={[styles.buttonPicker, styles.pikerDate]}>
                                                 <FontAwesomeIcon icon={faCalendarDay} />
-                                                <Text>{DayFormat(modalData.date, 'DATE')}</Text>
+                                                <Text style={{ color: '#000' }}>{DayFormat(modalData.date, 'DATE')}</Text>
                                             </TouchableOpacity>
                                             <TouchableOpacity style={[styles.buttonPicker, styles.pikerTime]} onPress={() => setModalData({ ...modalData, notification: !modalData.notification })}>
                                                 <FontAwesomeIcon icon={faBell} />
@@ -458,7 +526,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#F8F8F8',
         paddingLeft: 10,
         paddingRight: 10,
-        marginBottom: 20
+        marginBottom: 20,
+        color: '#000'
         // marginBottom: 36
     },
     buttonPicker: {

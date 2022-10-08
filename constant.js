@@ -175,7 +175,7 @@ export const DayFormat = (date, type) => {
         case "DATE":
             return `${value.toLocaleDateString("vi-VN")}`
         case "TIME":
-            return ` ${value.toLocaleTimeString("vi-VN")}`
+            return `${value.toLocaleTimeString("vi-VN", { hour: '2-digit', minute: '2-digit' })}`
         default:
             return `${value.toLocaleDateString("vi-VN")} | ${value.toLocaleTimeString("vi-VN")}`
     }
@@ -196,7 +196,7 @@ export const addSpace = (text) => {
             arr.splice(index, 1)
         }
     })
-    arr.splice(3, 1)
+    // arr.splice(4, 1)
     return arr
 }
 export const creditArr = [{
@@ -288,4 +288,39 @@ export const TaskList1 = [
         ]
     }
 
+]
+export const numberFormat = (value) =>
+    new Intl.NumberFormat('it-IT').format(value);
+
+export const spending = [
+    {
+        content: 'Ăn sáng',
+        value: 25000,
+        date: '022-10-05T18:11:50.882Z',
+        type: 'EATING'
+    },
+    {
+        content: 'Ăn trưa',
+        value: 25000,
+        date: '022-10-05T18:11:50.882Z',
+        type: 'EATING'
+    },
+    {
+        content: 'Youtube Premium',
+        value: 50000,
+        date: '022-10-05T18:11:50.882Z',
+        type: 'SERVICE'
+    },
+    {
+        content: 'Đổ xăng',
+        value: 500000,
+        date: '022-10-05T18:11:50.882Z',
+        type: 'MOVING'
+    },
+    {
+        content: 'Lương',
+        value: 5000000,
+        date: '022-10-05T18:11:50.882Z',
+        type: 'INCOME'
+    },
 ]

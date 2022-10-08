@@ -1,22 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react'
 import {
-    StyleSheet, Text, View, SafeAreaView, StatusBar, TouchableOpacity, Modal, ScrollView, Animated, I18nManager,
+    StyleSheet, Text, View, SafeAreaView, StatusBar, TouchableOpacity, Modal, Animated, I18nManager,
     Pressable, Platform, TouchableWithoutFeedback, Keyboard, KeyboardAvoidingView, TextInput, SectionList, TouchableHighlight, Button
 } from 'react-native';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faCheck, faPlus, faPenToSquare, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { TaskList1 } from '../constant';
-import { SwipeListView } from 'react-native-swipe-list-view';
 import Loading from './Loading';
 
 import firestore from '@react-native-firebase/firestore';
 
-import { FlatList, RectButton } from 'react-native-gesture-handler';
 // import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { GestureHandlerRootView, Swipeable } from "react-native-gesture-handler";
 
-import AppleStyleSwipeableRow from './AppleStyleSwipeableRow';
 
 const TodoDetail = ({ route, navigation }) => {
     const [show, setShow] = useState(false)
@@ -28,7 +25,6 @@ const TodoDetail = ({ route, navigation }) => {
     const [modalShow, setModalShow] = useState(false);
     const [refesh, setRefesh] = useState(0)
     const SwipeableRef = useRef([])
-    console.log(`=> SwipeableRef`, SwipeableRef)
 
     const [modalData, setModalData] = useState({
         title: '',
@@ -95,6 +91,7 @@ const TodoDetail = ({ route, navigation }) => {
             })
         setRefesh(refesh + 1)
         setModalShow(false)
+        SwipeableRef.current[modalData.indexItem].close()
     }
     // EditTaskListItem
     const ModalEditTaskListItem = (data) => {
@@ -130,9 +127,7 @@ const TodoDetail = ({ route, navigation }) => {
         setRefesh(refesh + 1)
         // setTaskList({ ...taskList, taskGroup: taskGroup })
         setModalShow(false)
-        console.log(SwipeableRef)
         SwipeableRef.current[modalData.indexItem].close()
-        console.log(`=> SwipeableRef[indexItem]`, SwipeableRef[modalData.indexItem])
     }
     // Handle Complete
     const handleTaskListITemComplete = (data, index) => {
@@ -324,7 +319,7 @@ const TodoDetail = ({ route, navigation }) => {
                     <View style={styles.modalView}>
                         {modalData.action === DELETE_TASK ?
                             <View>
-                                <Text>Bạn có muốn xoá task: {" "}
+                                <Text style={{ color: '#000' }}>Bạn có muốn xoá task: {" "}
                                     {textInput}
                                 </Text>
                                 <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', marginTop: 20 }}>
@@ -344,8 +339,8 @@ const TodoDetail = ({ route, navigation }) => {
                             </View>
                             : modalData.action === DELETE_GROUP ?
                                 <View>
-                                    <Text>Bạn có muốn xoá nhóm task này: {" "}
-                                        {textInput}
+                                    <Text style={{ color: '#000' }}>Bạn có muốn xoá {" "}
+                                        {textInput} ?
                                     </Text>
                                     <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', marginTop: 20 }}>
                                         <Pressable
@@ -364,7 +359,7 @@ const TodoDetail = ({ route, navigation }) => {
                                 </View> :
                                 modalData.action === EDIT_DELETE ?
                                     <View>
-                                        <Text>Bạn có muốn làm gì:
+                                        <Text style={{ color: '#000' }}>Bạn có muốn làm gì:
                                         </Text>
                                         <View style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexDirection: 'row', marginTop: 20 }}>
                                             <Pressable
@@ -390,7 +385,7 @@ const TodoDetail = ({ route, navigation }) => {
                                             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                                                 <View style={styles.inner}>
                                                     {/* <Text style={styles.header}>Header</Text> */}
-                                                    <TextInput placeholder="Task" style={styles.textInput} defaultValue={textInput} onChangeText={(newText) => setTextInput(newText)} />
+                                                    <TextInput placeholderTextColor="#A5A5A5" placeholder="Task" style={styles.textInput} defaultValue={textInput} onChangeText={(newText) => setTextInput(newText)} />
                                                 </View>
                                             </TouchableWithoutFeedback>
                                         </KeyboardAvoidingView>
@@ -540,7 +535,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#F8F8F8',
         paddingLeft: 20,
         paddingRight: 20,
-        marginBottom: 20
+        marginBottom: 20,
+        color: '#000'
         // marginBottom: 36
     },
     actionText: {
