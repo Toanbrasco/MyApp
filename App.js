@@ -15,6 +15,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 // Xanh lá #4BB543
 // Xanh dương #2196F3
 
+
+// Screen
+
 import HomeScreen from './screen/HomeScreen';
 import Spending from './screen/Spending';
 import Todo from './screen/Todo';
@@ -51,7 +54,6 @@ const App = () => {
                 <Tab.Screen name="AddCredit" component={Credit} options={{ headerShown: false, tabBarVisible: true, tabBarStyle: { display: 'none' } }} />
                 <Tab.Screen name="EditCredit" component={Credit} options={{ headerShown: false, tabBarVisible: true, tabBarStyle: { display: 'none' } }} />
             </Tab.Navigator>
-
         </NavigationContainer>
     );
 };

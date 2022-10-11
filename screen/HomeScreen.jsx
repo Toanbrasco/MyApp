@@ -39,11 +39,11 @@ const HomeScreen = ({ navigation, route }) => {
     const copyToClipboard = async (type) => {
         switch (type) {
             case "STK":
-                await Clipboard.setStringAsync(`Số tài khoản: ${modalData.credit.accountNum}`);
+                await Clipboard.setStringAsync(`${modalData.credit.accountNum}`);
                 ToastAndroid.show('Đã copy số tài khoản', ToastAndroid.SHORT);
                 break;
             case "ST":
-                await Clipboard.setStringAsync(`Số thẻ: ${modalData.credit.creditNum}`);
+                await Clipboard.setStringAsync(`${modalData.credit.creditNum}`);
                 ToastAndroid.show('Đã copy số thẻ', ToastAndroid.SHORT);
                 break;
             case "ALL":
@@ -106,29 +106,6 @@ const HomeScreen = ({ navigation, route }) => {
                 setLoading(false)
             });
     }, [refesh])
-    const [exitApp, setExitApp] = useState(0);
-    // const backAction = () => {
-    //     setTimeout(() => {
-    //         setExitApp(0);
-    //     }, 2000); // 2 seconds to tap second-time
-
-    //     if (exitApp === 0) {
-    //         setExitApp(exitApp + 1);
-
-    //         ToastAndroid.show('Nhấn lần nữa để thoát', ToastAndroid.SHORT);
-    //     } else if (exitApp === 1) {
-    //         BackHandler.exitApp();
-    //     }
-    //     return true;
-    // };
-    // useEffect(() => {
-    //     const backHandler = BackHandler.addEventListener(
-    //         'hardwareBackPress',
-    //         backAction,
-    //     );
-    //     return () => backHandler.remove();
-    //     // BackHandler.removeEventListener('hardwareBackPress', backAction);
-    // }, []);
 
     if (loading) {
         return <Loading />;

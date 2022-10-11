@@ -234,6 +234,10 @@ const TodoDetail = ({ route, navigation }) => {
         getTaskDetail()
     }, [itemId, refesh])
 
+    useEffect(() => {
+        setLoading(true)
+    }, [itemId])
+
     if (loading) {
         return <Loading />
     }
@@ -265,7 +269,7 @@ const TodoDetail = ({ route, navigation }) => {
             <StatusBar barStyle="auto" hidden={true} />
             <View style={[styles.container, { height: '100%' }]}>
                 <TouchableOpacity onLongPress={ModalAddTaskGroup} >
-                    <Text style={{ fontSize: 25, marginTop: 20, color: '#000' }}>Tiêu đề task</Text>
+                    <Text style={{ fontSize: 25, marginTop: 20, color: '#000' }}>{taskList.titleTask}</Text>
                 </TouchableOpacity>
                 <GestureHandlerRootView>
                     <SectionList

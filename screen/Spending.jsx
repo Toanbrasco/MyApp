@@ -7,7 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SwiperFlatList } from 'react-native-swiper-flatlist';
 
 import { PieChart, BarChart } from "react-native-gifted-charts";
-import { barData, barData2, pieData, DayFormat, spending, numberFormat } from '../constant';
+import { barData, barData2, pieData, DayFormat, spending, numberFormat, monthArr } from '../constant';
 
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome'
 import { faArrowTrendUp, faUtensils, faMotorcycle, faFilm, faPlus, faCalendarDay, faClock, faBagShopping, faWallet, faTrash } from '@fortawesome/free-solid-svg-icons'
@@ -35,11 +35,10 @@ const Spending = () => {
         percent: 100,
     })
     const [modalDelete, setModalDelete] = useState({
-        index: '',
+        index: 0,
         action: ''
     })
     const [SERVICE, MOVING, EATTING, INCOME, SHOPPING] = ['SERVICE', 'MOVING', 'EATTING', 'INCOME', 'SHOPPING']
-    const monthArr = ['MONTH_1', 'MONTH_2', 'MONTH_3', 'MONTH_4', 'MONTH_5', 'MONTH_6', 'MONTH_7', 'MONTH_8', 'MONTH_9', 'MONTH_10', 'MONTH_11', 'MONTH_12']
     const [modalData, setModalData] = useState({
         value: 0,
         content: '',
@@ -266,8 +265,8 @@ const Spending = () => {
                 ToastAndroid.show('Đã xoá!', ToastAndroid.SHORT);
                 setRefesh(refesh + 1)
                 setModalData(initModalData)
-                setModalDelete({ index: '', action: '' })
-                setModalVisible(!modalVisible)
+                setModalDelete({ index: 0, action: '' })
+                setModalVisible(false)
                 SwipeableRef.current[modalDelete.index].close()
             })
     }
@@ -295,7 +294,7 @@ const Spending = () => {
             MonthSpendingArr.push({
                 value: value,
                 label: index + 1,
-                labelTextStyle: { color: 'gray' },
+                labelTextStyle: { color: 'gray', fontSize: 13 },
                 frontColor: '#177AD5',
             })
         })
@@ -322,7 +321,7 @@ const Spending = () => {
             MonthSpendingArr.push({
                 value: value,
                 label: index + 1,
-                labelTextStyle: { color: 'gray' },
+                labelTextStyle: { color: 'gray', fontSize: 13 },
                 frontColor: '#ED6665',
             })
         })
@@ -335,7 +334,6 @@ const Spending = () => {
         handleIncomeMonth()
         handleSpendingMonth()
     }, [refesh])
-
 
     if (loading) return <Loading />
     return (
@@ -426,7 +424,7 @@ const Spending = () => {
                                 // colors={['#F36BFF', '#8C25DE']}
                                 style={[styles.BgLinear, {
                                     flex: 1, width: width - 40, height: '100%', borderRadius: 15, opacity: 0.9,
-                                    paddingRight: 10, paddingLeft: 15, paddingBottom: 20, paddingTop: 20
+                                    paddingLeft: 15, paddingBottom: 20, paddingTop: 20
                                 }]}>
 
                                 <Text style={{ fontSize: 20, color: '#fff' }}>Thu nhập hàng tháng</Text>
@@ -434,9 +432,9 @@ const Spending = () => {
                                     <BarChart
                                         data={incomeMonth}
                                         height={150}
-                                        barWidth={14}
-                                        initialSpacing={5}
-                                        spacing={10}
+                                        barWidth={10}
+                                        initialSpacing={10}
+                                        spacing={width / 12 - 19}
                                         barBorderRadius={2}
                                         hideRules
                                         xAxisThickness={0}
@@ -453,7 +451,7 @@ const Spending = () => {
                                             curved: true,
                                             hideDataPoints: true,
                                             shiftY: 30,
-                                            initialSpacing: -30,
+                                            initialSpacing: -20,
                                         }}
 
                                     />
@@ -467,7 +465,7 @@ const Spending = () => {
                                 // colors={['#F36BFF', '#8C25DE']}
                                 style={[styles.BgLinear, {
                                     flex: 1, width: width - 40, borderRadius: 15, height: '100%',
-                                    opacity: 0.9, paddingRight: 10, paddingLeft: 15, paddingBottom: 20, paddingTop: 20
+                                    opacity: 0.9, paddingLeft: 15, paddingBottom: 20, paddingTop: 20
                                 }]}>
 
                                 <Text style={{ fontSize: 20, color: '#fff' }}>Chi tiêu hàng tháng</Text>
@@ -475,9 +473,9 @@ const Spending = () => {
                                     <BarChart
                                         data={spendingMonth}
                                         height={150}
-                                        barWidth={14}
-                                        initialSpacing={5}
-                                        spacing={10}
+                                        barWidth={10}
+                                        initialSpacing={10}
+                                        spacing={width / 12 - 19}
                                         barBorderRadius={2}
                                         hideRules
                                         xAxisThickness={0}
@@ -494,7 +492,7 @@ const Spending = () => {
                                             curved: true,
                                             hideDataPoints: true,
                                             shiftY: 30,
-                                            initialSpacing: -30,
+                                            initialSpacing: -20,
                                         }}
 
                                     />
@@ -503,7 +501,7 @@ const Spending = () => {
                         </SwiperFlatList>
                     </View>
                     <View style={{ marginTop: 20, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Text style={{ fontSize: 20 }}>Tháng {new Date().getMonth() + 1}</Text>
+                        <Text style={{ fontSize: 20, color: '#000' }}>Tháng {new Date().getMonth() + 1}</Text>
                         {
                             <Text style={[styles.colorWhite, { color: 'red' }]}>
                                 {
